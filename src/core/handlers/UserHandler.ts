@@ -1,0 +1,39 @@
+import { NextFunction, Request, Response } from "express";
+import { HandlerRepository } from "../repositories/HandlerRepository";
+import { ServiceRepository } from "../repositories/ServiceRepository";
+import { CreateUserDto } from "../../dto/UserDto";
+import { UserEntity } from "../domain/entities/UserEntity";
+
+export const userHandler = (service: ServiceRepository): HandlerRepository => {
+	const createUserHandler = async (req: Request<{}, {}, CreateUserDto>, res: Response, next: NextFunction) => {
+		try {
+			const dto: CreateUserDto = req.body;
+			if (!dto) {
+				throw new Error("data invalid")
+
+			}
+			if (!dto.email) {
+				throw new Error("missing email")
+
+			}
+			if (!dto.password) {
+				throw new Error("password")
+
+			}
+			const user: UserEntity = {
+				name: dto.name,
+				email: dto.email,
+				password: dto.password
+			}
+			const isCreated: UserEntity = await service.create(user)
+			res.json(isCreated);
+		} catch (e) {
+			next(e)
+		}
+
+	}
+
+	return {
+		createUserHandler,
+	}
+}
