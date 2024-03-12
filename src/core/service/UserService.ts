@@ -11,6 +11,8 @@ export const service = (userImpl: UserRepository): ServiceRepository => {
 		} catch (e) {
 			console.error("Got error = " + e)
 			throw new Error("error " + e)
+		} finally {
+
 		}
 	}
 
