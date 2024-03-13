@@ -3,4 +3,5 @@ import { CreateUserDto } from "../../dto/UserDto";
 
 export interface HandlerRepository {
 	createUserHandler: (req: Request<{}, {}, CreateUserDto>, res: Response, next: NextFunction) => void
+	loginHandler: (req: Request<{}, {}, CreateUserDto>, res: Response, next: NextFunction) => void
 }

@@ -7,14 +7,16 @@ import { userHandler } from "../core/handlers/UserHandler";
 import { HandlerRepository } from "../core/repositories/HandlerRepository";
 import { ServiceRepository } from "../core/repositories/ServiceRepository";
 
-export const errorHandler = (
+const errorHandler = (
 	err: Error,
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
-	console.error(err.stack); // Log the error
-	res.status(500).json({ error: ' ' + err.message }); // Send a generic error response
+	const errorObject = {
+		"error": err.message,
+	}
+	res.status(500).json({ error: errorObject }); // Send a generic error response
 };
 
 export const server = (port: number) => {
@@ -26,9 +28,11 @@ export const server = (port: number) => {
 	const startServer = () => {
 		const app = express();
 		app.use(express.json()); // Parse JSON bodies
-		app.use(errorHandler);
 
 		app.post('/create-user', handler.createUserHandler);
+		app.post('/login', handler.loginHandler);
+
+		app.use(errorHandler);
 
 		app.listen(port, () => {
 			console.log(`Server is running on port ${port}`);

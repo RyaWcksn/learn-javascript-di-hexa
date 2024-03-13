@@ -8,18 +8,6 @@ export const userHandler = (service: ServiceRepository): HandlerRepository => {
 	const createUserHandler = async (req: Request<{}, {}, CreateUserDto>, res: Response, next: NextFunction) => {
 		try {
 			const dto: CreateUserDto = req.body;
-			if (!dto) {
-				throw new Error("data invalid")
-
-			}
-			if (!dto.email) {
-				throw new Error("missing email")
-
-			}
-			if (!dto.password) {
-				throw new Error("password")
-
-			}
 			const user: UserEntity = {
 				name: dto.name,
 				email: dto.email,
@@ -32,8 +20,23 @@ export const userHandler = (service: ServiceRepository): HandlerRepository => {
 		}
 
 	}
+	const loginHandler = async (req: Request<{}, {}, CreateUserDto>, res: Response, next: NextFunction) => {
+		try {
+			const dto: CreateUserDto = req.body;
+			const isLogin: UserEntity = await service.login(dto.email, dto.password)
+			const loginObject = {
+				"message": "logged in!",
+				"user": isLogin
+			}
+			res.json(loginObject);
+		} catch (e) {
+			next(e)
+		}
+
+	}
 
 	return {
 		createUserHandler,
+		loginHandler
 	}
 }

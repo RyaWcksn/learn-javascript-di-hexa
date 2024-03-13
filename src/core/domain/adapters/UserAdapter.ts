@@ -85,12 +85,38 @@ export const userImpl = (db: PrismaClient): UserRepository => {
 			throw new Error("error " + e)
 		}
 	}
+
+	const login = async (email: string): Promise<UserEntity> => {
+		try {
+			const data = await db.user.findUnique({
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					password: true
+				},
+				where: {
+					email: email
+				}
+			});
+			const user: UserEntity = {
+				name: data?.name || "",
+				email: data?.email || "",
+				password: data?.password || ""
+			}
+			return user;
+		} catch (e) {
+			console.error("Got error = " + e)
+			throw new Error("error " + e)
+		}
+	}
 	return {
 		createUser,
 		getUsers,
 		getUser,
 		updateUser,
 		deleteUser,
+		login,
 	}
 
 }
